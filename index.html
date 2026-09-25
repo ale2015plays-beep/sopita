@@ -2,16 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- SEO para que te encuentren como Sopita de Marciano -->
   <title>Sopita de Marciano ★ WebAR & Stickers Holográficos</title>
   <meta name="description" content="Sopita de Marciano: Stickers holográficos coleccionables con Realidad Aumentada interactiva, video en bucle y audio.">
   <meta name="keywords" content="Sopita de Marciano, stickers realidad aumentada, WebAR, stickers holograficos, stickers bolivia, y2k">
-
-  <!-- Motores WebAR -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
   <!-- Fuentes retro Y2K y Pixel -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +20,6 @@
       --cyan-alien: #00ffd0;
       --magenta-neon: #ff1464;
       --yellow-toxic: #ffea00;
-      --orange-chicha: #ff6b2b;
       --border-retro: 3px solid #000;
       --shadow-brutal: 4px 4px 0px #000;
     }
@@ -42,21 +36,20 @@
       background-size: 20px 20px;
       color: #fff;
       font-family: 'Space Mono', monospace;
-      overflow-x: hidden;
       min-height: 100vh;
+      overflow-y: auto !important; /* Permite scroll vertical */
+      padding-bottom: 60px; /* Espacio para que la marquesina no tape el final */
     }
 
-    /* === PORTADA LANDING (Modo Web) === */
     #landing-view {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px 15px 50px 15px;
+      padding: 20px 15px;
       max-width: 600px;
       margin: 0 auto;
     }
 
-    /* Barra tipo ventana de Sistema Operativo 90s */
     .retro-window {
       width: 100%;
       background: var(--card-bg);
@@ -100,7 +93,6 @@
       text-align: center;
     }
 
-    /* Logo y Título */
     .saucer-badge {
       display: inline-block;
       background: var(--cyan-alien);
@@ -133,7 +125,6 @@
       margin-bottom: 20px;
     }
 
-    /* Sticker Card Mockup */
     .sticker-preview {
       background: #000;
       border: var(--border-retro);
@@ -178,7 +169,6 @@
       50% { transform: translateY(-8px); }
     }
 
-    /* Pasos de Instrucción */
     .instruction-steps {
       display: flex;
       flex-direction: column;
@@ -219,7 +209,6 @@
       color: #e5e0f0;
     }
 
-    /* Marquesina Inferior */
     .marquee-container {
       position: fixed;
       bottom: 0;
@@ -245,42 +234,10 @@
       0% { transform: translateX(100%); }
       100% { transform: translateX(-100%); }
     }
-
-    /* === VISTA WEBAR (Cámara activa por QR) === */
-    #ar-view {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 1000;
-      background: #000;
-    }
-
-    #ar-overlay {
-      position: fixed;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(13, 9, 20, 0.85);
-      border: 2px solid var(--cyan-alien);
-      box-shadow: 2px 2px 0px #000;
-      color: var(--cyan-alien);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-      z-index: 1100;
-      pointer-events: none;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
   </style>
 </head>
 <body>
 
-  <!-- 1. VISTA DE INICIO / LANDING (Para quienes entran a sopita.fyi) -->
   <main id="landing-view">
     <div class="retro-window">
       <div class="window-header">
@@ -324,59 +281,18 @@
     </div>
   </main>
 
-  <!-- Marquesina inferior -->
-  <div class="marquee-container" id="landing-marquee">
+  <div class="marquee-container">
     <div class="marquee-text">
       ★ SOPITA DE MARCIANO ★ STICKERS HOLOGRÁFICOS CON REALIDAD AUMENTADA ★ SOLO 2 BS ★ LA PAZ - BOLIVIA ★ SOPITA.FYI ★
     </div>
   </div>
 
-  <!-- 2. VISTA WEBAR (Se activa únicamente si la URL trae ?id=...) -->
-  <div id="ar-view">
-    <div id="ar-overlay">🛸 Enfoca tu sticker para activar</div>
-    
-    <a-scene 
-      mindar-image="imageTargetSrc: ./snoopy.mind; filterMinCF: 0.001; filterBeta: 1000; missTolerance: 10;" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
-      
-      <a-assets>
-        <video id="snoopy-video" src="./snoopy.mp4" preload="auto" loop="true" playsinline webkit-playsinline></video>
-      </a-assets>
-
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-      <a-entity id="target-snoopy" mindar-image-target="targetIndex: 0">
-        <a-video src="#snoopy-video" width="1" height="1" position="0 0 0"></a-video>
-      </a-entity>
-    </a-scene>
-  </div>
-
-  <!-- Lógica de Enrutamiento Inteligente -->
   <script>
+    // Si por error alguien escanea un QR viejo que apuntaba directo a la raíz con ?id=...
     const urlParams = new URLSearchParams(window.location.search);
     const stickerId = urlParams.get('id');
-
     if (stickerId) {
-      // Viene de un código QR: activamos Realidad Aumentada
-      document.getElementById('landing-view').style.display = 'none';
-      document.getElementById('landing-marquee').style.display = 'none';
-      document.getElementById('ar-view').style.display = 'block';
-
-      // Auto-reproducir video al detectar el sticker
-      const target = document.querySelector('#target-snoopy');
-      const video = document.querySelector('#snoopy-video');
-
-      if (target && video) {
-        target.addEventListener('targetFound', () => {
-          video.play().catch(e => console.log('Autoplay bloqueado hasta toque manual:', e));
-        });
-        target.addEventListener('targetLost', () => {
-          video.pause();
-        });
-      }
+      window.location.href = `./ar.html?id=${stickerId}`;
     }
   </script>
 </body>
