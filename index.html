@@ -3,48 +3,381 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>AR Sticker</title>
+  
+  <!-- SEO para que te encuentren como Sopita de Marciano -->
+  <title>Sopita de Marciano ★ WebAR & Stickers Holográficos</title>
+  <meta name="description" content="Sopita de Marciano: Stickers holográficos coleccionables con Realidad Aumentada interactiva, video en bucle y audio.">
+  <meta name="keywords" content="Sopita de Marciano, stickers realidad aumentada, WebAR, stickers holograficos, stickers bolivia, y2k">
+
+  <!-- Motores WebAR -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+  <!-- Fuentes retro Y2K y Pixel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
+
   <style>
-    body { margin: 0; overflow: hidden; background: #000; font-family: sans-serif; }
-    #msg {
-      position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-      background: rgba(0,0,0,0.7); color: #fff; padding: 6px 14px;
-      border-radius: 20px; font-size: 13px; z-index: 999; pointer-events: none;
+    :root {
+      --bg-dark: #0d0914;
+      --card-bg: #171124;
+      --cyan-alien: #00ffd0;
+      --magenta-neon: #ff1464;
+      --yellow-toxic: #ffea00;
+      --orange-chicha: #ff6b2b;
+      --border-retro: 3px solid #000;
+      --shadow-brutal: 4px 4px 0px #000;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: radial-gradient(rgba(0, 255, 208, 0.15) 1px, transparent 0);
+      background-size: 20px 20px;
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* === PORTADA LANDING (Modo Web) === */
+    #landing-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 15px 50px 15px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Barra tipo ventana de Sistema Operativo 90s */
+    .retro-window {
+      width: 100%;
+      background: var(--card-bg);
+      border: var(--border-retro);
+      box-shadow: var(--shadow-brutal);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    .window-header {
+      background: var(--magenta-neon);
+      border-bottom: var(--border-retro);
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid #000;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-close { background: #ff4949; }
+    .dot-min { background: var(--yellow-toxic); }
+    .dot-max { background: var(--cyan-alien); }
+
+    .window-body {
+      padding: 24px 16px;
+      text-align: center;
+    }
+
+    /* Logo y Título */
+    .saucer-badge {
+      display: inline-block;
+      background: var(--cyan-alien);
+      color: #000;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 4px 14px;
+      border: var(--border-retro);
+      box-shadow: 2px 2px 0px #000;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    h1.brand-title {
+      font-family: 'VT323', monospace;
+      font-size: 48px;
+      line-height: 1;
+      color: var(--yellow-toxic);
+      text-shadow: 3px 3px 0px var(--magenta-neon), 5px 5px 0px #000;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    p.brand-sub {
+      font-size: 13px;
+      color: #d8cfe8;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    /* Sticker Card Mockup */
+    .sticker-preview {
+      background: #000;
+      border: var(--border-retro);
+      box-shadow: var(--shadow-brutal);
+      border-radius: 6px;
+      padding: 16px;
+      margin: 15px auto;
+      max-width: 320px;
+      position: relative;
+    }
+
+    .badge-price {
+      position: absolute;
+      top: -12px;
+      right: -10px;
+      background: var(--yellow-toxic);
+      color: #000;
+      font-weight: bold;
+      border: var(--border-retro);
+      box-shadow: 2px 2px 0px #000;
+      padding: 4px 10px;
+      font-size: 14px;
+      transform: rotate(5deg);
+    }
+
+    .sticker-frame {
+      border: 2px dashed var(--cyan-alien);
+      padding: 20px;
+      background: rgba(0, 255, 208, 0.05);
+      border-radius: 4px;
+    }
+
+    .alien-icon {
+      font-size: 52px;
+      display: block;
+      margin-bottom: 6px;
+      animation: float 2.5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* Pasos de Instrucción */
+    .instruction-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .step-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      padding: 12px 14px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .step-num {
+      background: var(--magenta-neon);
+      color: #fff;
+      font-weight: bold;
+      font-size: 14px;
+      width: 28px;
+      height: 28px;
+      border: var(--border-retro);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      font-size: 12px;
+      line-height: 1.4;
+      color: #e5e0f0;
+    }
+
+    /* Marquesina Inferior */
+    .marquee-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--yellow-toxic);
+      color: #000;
+      border-top: var(--border-retro);
+      padding: 6px 0;
+      font-size: 13px;
+      font-weight: bold;
+      overflow: hidden;
+      white-space: nowrap;
+      z-index: 100;
+    }
+
+    .marquee-text {
+      display: inline-block;
+      animation: marquee 16s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* === VISTA WEBAR (Cámara activa por QR) === */
+    #ar-view {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1000;
+      background: #000;
+    }
+
+    #ar-overlay {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(13, 9, 20, 0.85);
+      border: 2px solid var(--cyan-alien);
+      box-shadow: 2px 2px 0px #000;
+      color: var(--cyan-alien);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      z-index: 1100;
+      pointer-events: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
   </style>
 </head>
 <body>
-  <div id="msg">Apunta al sticker</div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id') || 'snoopy';
+  <!-- 1. VISTA DE INICIO / LANDING (Para quienes entran a sopita.fyi) -->
+  <main id="landing-view">
+    <div class="retro-window">
+      <div class="window-header">
+        <span>SOPITA_OS_v1.0.exe</span>
+        <div class="window-controls">
+          <span class="dot dot-min"></span>
+          <span class="dot dot-max"></span>
+          <span class="dot dot-close"></span>
+        </div>
+      </div>
+      
+      <div class="window-body">
+        <div class="saucer-badge">🛸 ESTUDIO EXPERIMENTAL</div>
+        <h1 class="brand-title">SOPITA DE MARCIANO</h1>
+        <p class="brand-sub">Stickers holográficos coleccionables con Realidad Aumentada Web. No requiere apps.</p>
 
-    const scene = document.createElement('a-scene');
-    scene.setAttribute('mindar-image', `imageTargetSrc: ./assets/${id}.mind; uiScanning: no;`);
-    scene.setAttribute('vr-mode-ui', 'enabled: false');
-    scene.setAttribute('device-orientation-permission-ui', 'enabled: false');
+        <div class="sticker-preview">
+          <span class="badge-price">2 Bs</span>
+          <div class="sticker-frame">
+            <span class="alien-icon">👾</span>
+            <div style="font-size: 12px; color: var(--cyan-alien); font-weight: bold;">STICKER MULTIMEDIA</div>
+            <div style="font-size: 10px; color: #aaa; margin-top: 4px;">Video Loop ★ 3D ★ Audio Reactivo</div>
+          </div>
+        </div>
 
-    scene.innerHTML = `
+        <div class="instruction-steps">
+          <div class="step-box">
+            <div class="step-num">1</div>
+            <div class="step-text">Elige tu sticker holográfico favorito de la canasta.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">2</div>
+            <div class="step-text">Escanea el código QR impreso con la cámara de tu celular.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">3</div>
+            <div class="step-text">Apunta al sticker y desbloquea la dimensión interactiva.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Marquesina inferior -->
+  <div class="marquee-container" id="landing-marquee">
+    <div class="marquee-text">
+      ★ SOPITA DE MARCIANO ★ STICKERS HOLOGRÁFICOS CON REALIDAD AUMENTADA ★ SOLO 2 BS ★ LA PAZ - BOLIVIA ★ SOPITA.FYI ★
+    </div>
+  </div>
+
+  <!-- 2. VISTA WEBAR (Se activa únicamente si la URL trae ?id=...) -->
+  <div id="ar-view">
+    <div id="ar-overlay">🛸 Enfoca tu sticker para activar</div>
+    
+    <a-scene 
+      mindar-image="imageTargetSrc: ./snoopy.mind; filterMinCF: 0.001; filterBeta: 1000; missTolerance: 10;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      
       <a-assets>
-        <video id="vid" src="./assets/${id}.mp4" preload="auto" loop="true" playsinline webkit-playsinline muted crossorigin="anonymous"></video>
+        <video id="snoopy-video" src="./snoopy.mp4" preload="auto" loop="true" playsinline webkit-playsinline></video>
       </a-assets>
+
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      <a-entity mindar-image-target="targetIndex: 0" id="target">
-        <a-video src="#vid" position="0 0 0" height="1" width="1"></a-video>
+
+      <a-entity id="target-snoopy" mindar-image-target="targetIndex: 0">
+        <a-video src="#snoopy-video" width="1" height="1" position="0 0 0"></a-video>
       </a-entity>
-    `;
+    </a-scene>
+  </div>
 
-    document.body.appendChild(scene);
+  <!-- Lógica de Enrutamiento Inteligente -->
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const stickerId = urlParams.get('id');
 
-    window.addEventListener('load', () => {
-      const target = document.getElementById('target');
-      const vid = document.getElementById('vid');
-      target.addEventListener('targetFound', () => vid.play().catch(e => console.log(e)));
-      target.addEventListener('targetLost', () => vid.pause());
-    });
+    if (stickerId) {
+      // Viene de un código QR: activamos Realidad Aumentada
+      document.getElementById('landing-view').style.display = 'none';
+      document.getElementById('landing-marquee').style.display = 'none';
+      document.getElementById('ar-view').style.display = 'block';
+
+      // Auto-reproducir video al detectar el sticker
+      const target = document.querySelector('#target-snoopy');
+      const video = document.querySelector('#snoopy-video');
+
+      if (target && video) {
+        target.addEventListener('targetFound', () => {
+          video.play().catch(e => console.log('Autoplay bloqueado hasta toque manual:', e));
+        });
+        target.addEventListener('targetLost', () => {
+          video.pause();
+        });
+      }
+    }
   </script>
 </body>
 </html>
