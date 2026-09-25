@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Sopita de Marciano ★ AR Visor</title>
+
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+      font-family: monospace;
+    }
+    #ar-overlay {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(13, 9, 20, 0.85);
+      border: 2px solid #00ffd0;
+      box-shadow: 2px 2px 0px #000;
+      color: #00ffd0;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      z-index: 1100;
+      pointer-events: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="ar-overlay">🛸 Enfoca tu sticker</div>
+
+  <a-scene 
+    mindar-image="imageTargetSrc: ./snoopy.mind; filterMinCF: 0.001; filterBeta: 1000; warmupTolerance: 5; missTolerance: 10;" 
+    color-space="sRGB" 
+    renderer="colorManagement: true, physicallyCorrectLights" 
+    vr-mode-ui="enabled: false" 
+    device-orientation-permission-ui="enabled: false">
+    
+    <a-assets>
+      <video id="snoopy-video" src="./snoopy.mp4" preload="auto" loop="true" playsinline webkit-playsinline></video>
+    </a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <a-entity id="target-snoopy" mindar-image-target="targetIndex: 0">
+      <a-video src="#snoopy-video" width="1" height="1" position="0 0 0"></a-video>
+    </a-entity>
+  </a-scene>
+
+  <script>
+    const target = document.querySelector('#target-snoopy');
+    const video = document.querySelector('#snoopy-video');
+
+    window.addEventListener('click', () => {
+      video.play().then(() => video.pause()).catch(() => {});
+    }, { once: true });
+
+    target.addEventListener('targetFound', () => {
+      video.play().catch(e => console.log('Esperando interacción:', e));
+    });
+
+    target.addEventListener('targetLost', () => {
+      video.pause();
+    });
+  </script>
+</body>
+</html>
